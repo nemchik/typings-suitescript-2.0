@@ -6,7 +6,7 @@
       <feature required="true">SERVERSIDESCRIPTING</feature>
     </features>
     <objects>
-      <object>customrole_biome_verification</object>
+      <object>__ROLE_ID__</object>
     </objects>
   </dependencies>
 </manifest>

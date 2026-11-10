@@ -14,10 +14,11 @@ export const envNames = [
   "SUITESCRIPT_VERIFY_SDF_PRIVATE_KEY_PATH",
   "SUITESCRIPT_VERIFY_PASSKEY",
   "SUITESCRIPT_VERIFY_DOMAIN",
+  "SUITESCRIPT_VERIFY_ROLE_ID",
 ] as const;
 
 const header =
-  "# Local configuration for the runtime verification tooling (docs/verification/automation.md).\n# This file is gitignored. Do not commit it and do not copy these values elsewhere.\n";
+  "# Local configuration for the runtime verification tooling (verification/README.md).\n# This file is gitignored. Do not commit it and do not copy these values elsewhere.\n";
 
 const unquote = (raw: string) => {
   const value = raw.trim();

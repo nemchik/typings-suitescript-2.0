@@ -20,6 +20,22 @@ export const fileCabinetFolder = "typings-suitescript-verification";
 export const runnerScriptId = "customscript_typings_verification_runner";
 export const runnerDeployId = "customdeploy_typings_verification_runner";
 
+/**
+ * The custom role the runner deployment is limited to and the token is mapped
+ * to. Set SUITESCRIPT_VERIFY_ROLE_ID to use a role you already have.
+ */
+export const defaultRoleId = "customrole_typings_verification";
+
+export function roleId(env: Record<string, string | undefined>): string {
+  const id = (env.SUITESCRIPT_VERIFY_ROLE_ID || defaultRoleId).trim();
+  if (!/^customrole_[a-z0-9_]{1,30}$/.test(id)) {
+    throw new Error(
+      `SUITESCRIPT_VERIFY_ROLE_ID must be a role script id like ${defaultRoleId} (lowercase letters, digits and underscores).`,
+    );
+  }
+  return id;
+}
+
 export const read = (path: string) =>
   readFileSync(path, "utf8").replace(/\r\n/g, "\n");
 
@@ -225,7 +241,10 @@ export function generateRunner(slugs: string[], template: string): string {
 }
 
 /** Writes the generated, gitignored runner and probe copies into the SDF project. */
-export function buildSdfProject(): { files: string[]; slugs: string[] } {
+export function buildSdfProject(role: string): {
+  files: string[];
+  slugs: string[];
+} {
   const probes = listProbes();
   const folder = join(
     sdfDir,
@@ -235,6 +254,18 @@ export function buildSdfProject(): { files: string[]; slugs: string[] } {
     fileCabinetFolder,
   );
   rmSync(join(sdfDir, "src", "FileCabinet"), { force: true, recursive: true });
+  // The manifest and the runner object name the role, so they are generated
+  // from the templates (and gitignored) instead of hard-coding one.
+  mkdirSync(join(sdfDir, "src", "Objects"), { recursive: true });
+  for (const file of [
+    "manifest.xml",
+    join("Objects", `${runnerScriptId}.xml`),
+  ]) {
+    writeFileSync(
+      join(sdfDir, "src", file),
+      read(join(sdfDir, "template", file)).replaceAll("__ROLE_ID__", role),
+    );
+  }
   mkdirSync(join(folder, "probes"), { recursive: true });
   const slugs = probes.map((probe) => probe.slug);
   const files = ["runner.js"];

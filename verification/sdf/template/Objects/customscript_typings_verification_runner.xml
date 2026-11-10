@@ -7,7 +7,7 @@
   <scriptdeployments>
     <scriptdeployment scriptid="customdeploy_typings_verification_runner">
       <allroles>F</allroles>
-      <audslctrole>[customrole_biome_verification]</audslctrole>
+      <audslctrole>[__ROLE_ID__]</audslctrole>
       <isdeployed>T</isdeployed>
       <loglevel>DEBUG</loglevel>
       <status>RELEASED</status>

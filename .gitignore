@@ -7,6 +7,8 @@
 verification/.env.local
 verification/sdf/project.json
 verification/sdf/src/FileCabinet/
+verification/sdf/src/manifest.xml
+verification/sdf/src/Objects/
 verification/sdf/*.log
 
 # Logs

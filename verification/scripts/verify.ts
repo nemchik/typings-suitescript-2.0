@@ -34,6 +34,7 @@ import {
   listProbes,
   read,
   readConfig,
+  roleId,
   restletUrl,
   root,
   scrub,
@@ -377,7 +378,7 @@ function setupCi() {
 
 async function deploy() {
   requireConfig();
-  const { files, slugs } = buildSdfProject();
+  const { files, slugs } = buildSdfProject(roleId(process.env));
   console.log(`Probes in the runner: ${slugs.join(", ")}`);
   console.log(`Files to upload: ${files.join(", ")}`);
   const approved = flags.has("--approved");
@@ -482,14 +483,14 @@ async function run() {
 
 async function cleanup() {
   requireConfig();
+  buildSdfProject(roleId(process.env));
   const objectFile = join(
     sdfDir,
     "src",
     "Objects",
     "customscript_typings_verification_runner.xml",
   );
-  const original = read(objectFile);
-  const disabled = original.replace(
+  const disabled = read(objectFile).replace(
     "<isdeployed>T</isdeployed>",
     "<isdeployed>F</isdeployed>",
   );
@@ -502,17 +503,12 @@ async function cleanup() {
   if (approved) {
     await confirmWrite("CLEANUP", "This turns the runner's deployment off");
   }
-  buildSdfProject();
   writeFileSync(objectFile, disabled);
-  try {
-    const status = suitecloud([
-      "project:deploy",
-      ...(approved ? [] : ["--dryrun"]),
-    ]);
-    process.exitCode = status;
-  } finally {
-    writeFileSync(objectFile, original);
-  }
+  const status = suitecloud([
+    "project:deploy",
+    ...(approved ? [] : ["--dryrun"]),
+  ]);
+  process.exitCode = status;
 }
 
 switch (command) {
