@@ -24,19 +24,20 @@ define(["N/query"], (query) => ({
     result["query.Type key count"] = Object.keys(query.Type).length;
     result["query.Type first keys"] = Object.keys(query.Type).slice(0, 8);
     result["query.Type sample values"] = Object.keys(query.Type).slice(0, 8).map((k) => String(query.Type[k]));
-    const candidates = Object.keys(query.Type)
-      .filter((k) => /^(CUSTOMER|EMPLOYEE|TRANSACTION|ITEM|SUBSIDIARY|CURRENCY|ACCOUNT|DEPARTMENT|LOCATION|CLASSIFICATION)$/.test(k))
-      .map((k) => query.Type[k]);
+    // Try every enum value until one the role can query works.
+    const candidates = Object.keys(query.Type).map((k) => query.Type[k]);
     result["candidate count"] = candidates.length;
+    let failures = 0;
     for (const candidate of candidates) {
       try {
         rows(query.create({ type: candidate, columns: [{ fieldId: "id" }] }));
         TYPE = candidate;
         break;
       } catch (e) {
-        result[`type ${candidate}`] = `THROWS: ${e.name}: ${e.message}`;
+        failures += 1;
       }
     }
+    result["types that failed before a usable one"] = failures;
     result["usable type"] = TYPE || "none";
     t("plain column only", () =>
       rows(query.create({ type: TYPE, columns: [{ fieldId: "id" }] })));
