@@ -21,7 +21,14 @@ define(["N/query"], (query) => ({
     // Pick the first record type the token role can query (permissions vary).
     result["Object.keys(query.Type) has CUSTOMER"] = Object.keys(query.Type).includes("CUSTOMER");
     let TYPE;
-    for (const candidate of ["customer", "transaction", "employee", "item"]) {
+    result["query.Type key count"] = Object.keys(query.Type).length;
+    result["query.Type first keys"] = Object.keys(query.Type).slice(0, 8);
+    result["query.Type sample values"] = Object.keys(query.Type).slice(0, 8).map((k) => String(query.Type[k]));
+    const candidates = Object.keys(query.Type)
+      .filter((k) => /^(CUSTOMER|EMPLOYEE|TRANSACTION|ITEM|SUBSIDIARY|CURRENCY|ACCOUNT|DEPARTMENT|LOCATION|CLASSIFICATION)$/.test(k))
+      .map((k) => query.Type[k]);
+    result["candidate count"] = candidates.length;
+    for (const candidate of candidates) {
       try {
         rows(query.create({ type: candidate, columns: [{ fieldId: "id" }] }));
         TYPE = candidate;

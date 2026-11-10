@@ -40,8 +40,10 @@ define(["N/search"], (search) => ({
         result[`join ${c[0]}.${c[2]}`] = `THROWS: ${e.name}`;
       }
     }
-    if (!J) return result;
+    // No permitted join: still test the non-joined forms on a plain search.
+    if (!J) J = ["transaction", "tranid", null];
     const TYPE = J[0];
+    result["joined cases possible"] = !!J[2];
     const plain = (() => {
       try {
         return first([
