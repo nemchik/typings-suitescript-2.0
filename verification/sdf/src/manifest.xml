@@ -1,0 +1,12 @@
+<manifest projecttype="ACCOUNTCUSTOMIZATION">
+  <projectname>typings-suitescript-verification</projectname>
+  <frameworkversion>1.0</frameworkversion>
+  <dependencies>
+    <features>
+      <feature required="true">SERVERSIDESCRIPTING</feature>
+    </features>
+    <objects>
+      <object>customrole_biome_verification</object>
+    </objects>
+  </dependencies>
+</manifest>

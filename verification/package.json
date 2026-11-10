@@ -1,0 +1,25 @@
+{
+  "name": "typings-suitescript-verification",
+  "private": true,
+  "description": "Runs small probe scripts in a NetSuite sandbox to check what the platform really does. Not part of the published typings.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "verify:certificate": "node scripts/verify.ts certificate",
+    "verify:cleanup": "node scripts/verify.ts cleanup",
+    "verify:deploy": "node scripts/verify.ts deploy",
+    "verify:doctor": "node scripts/verify.ts doctor",
+    "verify:env": "node scripts/verify.ts env",
+    "verify:passkey": "node scripts/verify.ts passkey",
+    "verify:run": "node scripts/verify.ts run",
+    "verify:setup-ci": "node scripts/verify.ts setup-ci"
+  },
+  "devDependencies": {
+    "@oracle/suitecloud-cli": "4.1.1",
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3"
+  },
+  "allowScripts": {
+    "@oracle/suitecloud-cli": true
+  }
+}

@@ -25,7 +25,15 @@
 	},
 	"scripts": {
 		"test": "exit 0",
-		"tsc": "tsc"
+		"tsc": "tsc",
+		"verify:certificate": "npm --prefix verification run verify:certificate --",
+		"verify:cleanup": "npm --prefix verification run verify:cleanup --",
+		"verify:deploy": "npm --prefix verification run verify:deploy --",
+		"verify:doctor": "npm --prefix verification run verify:doctor --",
+		"verify:env": "npm --prefix verification run verify:env --",
+		"verify:passkey": "npm --prefix verification run verify:passkey --",
+		"verify:run": "npm --prefix verification run verify:run --",
+		"verify:setup-ci": "npm --prefix verification run verify:setup-ci --"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"

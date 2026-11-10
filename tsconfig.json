@@ -36,5 +36,7 @@
 
 		/* Completeness */
 		"skipLibCheck": true
-	}
+	},
+
+	"exclude": ["verification"]
 }

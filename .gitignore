@@ -2,6 +2,13 @@
 .DS_Store
 **/*.js
 
+# Runtime verification (verification/README.md): probes are source, credentials and generated files are not
+!verification/**/*.js
+verification/.env.local
+verification/sdf/project.json
+verification/sdf/src/FileCabinet/
+verification/sdf/*.log
+
 # Logs
 logs
 *.log
