@@ -18,13 +18,36 @@ define(["N/search"], (search) => ({
     };
     const shape = (v) => (v === null ? "null" : Array.isArray(v) ? "array" : typeof v);
     const first = (columns) =>
-      search.create({ type: "transaction", columns }).run().getRange({ start: 0, end: 1 })[0];
+      search.create({ type: TYPE, columns }).run().getRange({ start: 0, end: 1 })[0];
+    // Joins need role permissions; use the first (type, column, join) the role can search.
+    const candidates = [
+      ["transaction", "email", "customer"],
+      ["transaction", "email", "employee"],
+      ["transaction", "name", "item"],
+      ["customer", "email", "salesrep"],
+      ["employee", "name", "department"],
+    ];
+    let J = null;
+    for (const c of candidates) {
+      try {
+        search
+          .create({ type: c[0], columns: [search.createColumn({ name: c[1], join: c[2] })] })
+          .run()
+          .getRange({ start: 0, end: 1 });
+        J = c;
+        break;
+      } catch (e) {
+        result[`join ${c[0]}.${c[2]}`] = `THROWS: ${e.name}`;
+      }
+    }
+    if (!J) return result;
+    const TYPE = J[0];
     const plain = (() => {
       try {
         return first([
           search.createColumn({ name: "tranid" }),
           search.createColumn({ name: "entity" }),
-          search.createColumn({ name: "email", join: "customer" }),
+          search.createColumn({ name: J[1], join: J[2] }),
         ]);
       } catch (e) {
         result["plain search"] = `THROWS: ${e.name}: ${e.message}`;
@@ -35,7 +58,7 @@ define(["N/search"], (search) => ({
       try {
         return first([
           search.createColumn({ name: "entity", summary: search.Summary.GROUP }),
-          search.createColumn({ name: "email", join: "customer", summary: search.Summary.GROUP }),
+          search.createColumn({ name: J[1], join: J[2], summary: search.Summary.GROUP }),
           search.createColumn({ name: "internalid", summary: search.Summary.COUNT }),
         ]);
       } catch (e) {
@@ -46,9 +69,9 @@ define(["N/search"], (search) => ({
     result["grouped row found"] = !!grp;
     if (plain) {
       t("getValue({name})", () => shape(plain.getValue({ name: "tranid" })));
-      t("getValue({name, join})", () => shape(plain.getValue({ name: "email", join: "customer" })));
+      t("getValue({name, join})", () => shape(plain.getValue({ name: J[1], join: J[2] })));
       t("getText({name})", () => shape(plain.getText({ name: "entity" })));
-      t("getText({name, join})", () => shape(plain.getText({ name: "email", join: "customer" })));
+      t("getText({name, join})", () => shape(plain.getText({ name: J[1], join: J[2] })));
       t("getValue(Column)", () => shape(plain.getValue(plain.columns[0])));
       t("getText(Column)", () => shape(plain.getText(plain.columns[1])));
       t("getValue('tranid')", () => shape(plain.getValue("tranid")));
@@ -60,10 +83,10 @@ define(["N/search"], (search) => ({
       t("getValue({name, summary: 'COUNT'})", () =>
         shape(grp.getValue({ name: "internalid", summary: "COUNT" })));
       t("getValue({name, join, summary})", () =>
-        shape(grp.getValue({ name: "email", join: "customer", summary: G })));
+        shape(grp.getValue({ name: J[1], join: J[2], summary: G })));
       t("getText({name, summary})", () => shape(grp.getText({ name: "entity", summary: G })));
       t("getText({name, join, summary})", () =>
-        shape(grp.getText({ name: "email", join: "customer", summary: G })));
+        shape(grp.getText({ name: J[1], join: J[2], summary: G })));
     }
     return result;
   },
