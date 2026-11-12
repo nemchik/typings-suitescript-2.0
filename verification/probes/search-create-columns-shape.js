@@ -4,6 +4,13 @@
  * mix? i.e. is it the same elements that were passed in, or normalized to
  * search.Column objects? Read-only. Returns plain data only.
  *
+ * Observed on 2026.2 (RESTlet): string, Column and mixed inputs all come back as
+ * search.Column objects (a single non-array string becomes an array of one), and
+ * run().columns matches. So Search.columns never holds the original strings.
+ * Also observed: search.create({type}) with no columns returned a non-array
+ * object for .columns (exact shape not inspected; probe it before claiming
+ * anything about Search.columns being typed as an array).
+ *
  * @NApiVersion 2.1
  * @scriptType Restlet
  */
