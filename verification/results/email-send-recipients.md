@@ -1,18 +1,18 @@
 # email.send recipients, cc and bcc: mixed arrays and single values
 
-- **NetSuite version:** not run yet
-- **Account type:** sandbox (required: every accepted call sends an email)
-- **Date:** not run yet
-- **Method:** script debugger, run by hand (not the runner: this test writes to the account)
+- **NetSuite version:** 2026.2
+- **Account type:** sandbox
+- **Date:** 2026-11-10
+- **Method:** deployed RESTlet (this repository's earlier hand-rolled runner, before the move to suitescript-verify). To run it again, use the script debugger: the suitescript-verify runner only runs probes that do not write
 - **Probe:** none. It was `probes/email-send-recipients.js`; the probe was removed because the runner only runs probes that do not write
 
 Does `email.send` accept a mixed array of internal ids and email addresses for `recipients`, `cc` and `bcc`, and a single value (id or address) for `cc` and `bcc`? Oracle's text says mixed arrays are valid; the typings only allow `number[]` or `string[]`.
 
-**Status: unverified.** The claim stays unverified until someone runs the test below and fills in this page.
+**Status: verified** on 2026.2. The results were first published in [pull request 462](https://github.com/headintheclouddev/typings-suitescript-2.0/pull/462); this page records them next to the test.
 
 ## Test
 
-Each accepted call creates a Message record and sends one email to the user running it (the author, by id, and that user's own address): expect about 8 messages. Run it in a **sandbox** only, in Customization > Scripting > Script Debugger (API version 2.1), then copy the logged JSON into Results.
+This is the probe's code, adapted for the script debugger (the original returned `result` from a RESTlet's `run()`; this one logs it). Each accepted call creates a Message record and sends one email to the user running it (the author, by id, and that user's own address). To run it again, use a **sandbox** only, in Customization > Scripting > Script Debugger (API version 2.1).
 
 ```js
 require(["N/email", "N/runtime", "N/log"], (email, runtime, log) => {
@@ -58,12 +58,20 @@ The script debugger can behave differently from a deployed script; confirm a sur
 
 ## Results
 
-Not run yet. Paste the logged JSON here. The output holds only `OK` or the error per key, no ids or addresses; check that before committing.
+As recorded in pull request 462 (the RESTlet's per-key output, summarized there as a table):
+
+| Call | Result |
+| --- | --- |
+| `recipients: [id, address]` and `[address, id]` | accepted |
+| `cc: [id, address]` | accepted |
+| `bcc: [id, address]` | accepted |
+| `cc` or `bcc` as a single id or address | throws `WRONG_PARAMETER_TYPE`: "options.cc is expected as Array" |
+| 11 recipients | throws `SSS_MAXIMUM_NUMBER_RECIPIENTS_EXCEEDED` |
 
 ## Explanation
 
-Not run yet.
+`email.send` accepts an array that mixes internal ids and email addresses for `recipients`, `cc` and `bcc`, as Oracle's text says. `cc` and `bcc` must be arrays: a single id or address throws `WRONG_PARAMETER_TYPE`, although `recipients` accepts a single value. More than 10 recipients throws before sending, matching the documented maximum.
 
 ## Decision
 
-Not run yet. No typing change should cite this page until it has results.
+[Pull request 462](https://github.com/headintheclouddev/typings-suitescript-2.0/pull/462) (merged, fixes issue 316) widened the typings: `recipients` is `number | string | (number | string)[]` (and the `readonly` form), and `cc` and `bcc` are `(number | string)[]` (and the `readonly` form), staying array-only.
