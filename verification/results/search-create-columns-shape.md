@@ -109,10 +109,10 @@ define(["N/search"], (search) => ({
 
 After `search.create`, `Search.columns` holds `search.Column` objects whatever was passed: strings, Column objects or a mix. A single string (not in an array) becomes an array of one Column. `run().columns` matches, and `columns[0].name` is a string. So reading `Search.columns` never gives back the original strings.
 
-With no columns, `search.create({ type })` gives a `.columns` that is an object but not an array. The probe did not inspect that object further.
+With no columns, `search.create({ type })` gives a `.columns` that this probe reports as "not array: object". [search-create-columns-empty](search-create-columns-empty.md) shows that value is `null`.
 
 This matches the run on the same version recorded earlier in the probe's header.
 
 ## Decision
 
-Evidence for [issue 238](https://github.com/headintheclouddev/typings-suitescript-2.0/issues/238) (open). The typings type `Search.columns` as `(Column | string)[]`, which is right for setting it but wider than what reading it returns (always `Column`, observed here). Any change waits on issue 238's design question (getter versus setter types). The no-columns case, an object that is not an array, needs its own probe before anyone claims `Search.columns` is always an array.
+Evidence for [issue 238](https://github.com/headintheclouddev/typings-suitescript-2.0/issues/238) (open). The typings type `Search.columns` as `(Column | string)[]`, which is right for setting it but wider than what reading it returns (always `Column`, observed here). Any change waits on issue 238's design question (getter versus setter types). With no columns, `Search.columns` is `null` ([search-create-columns-empty](search-create-columns-empty.md)), so it is not always an array.
