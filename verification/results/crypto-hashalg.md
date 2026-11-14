@@ -14,6 +14,9 @@
  * help lists only `SHA256` and `SHA512`; a member that exists but throws is not a
  * useful typing.
  *
+ * Typings: headintheclouddev/typings-suitescript-2.0 issue 389 (MD5 and SHA1
+ * are left out of HashAlg); history in issue 292.
+ *
  * @NApiVersion 2.1
  * @scriptType Restlet
  */
