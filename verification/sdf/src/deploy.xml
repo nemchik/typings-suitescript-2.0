@@ -1,6 +1,6 @@
 <deploy>
   <files>
-    <path>~/FileCabinet/SuiteScripts/typings-suitescript-verification/*</path>
+    <path>~/FileCabinet/SuiteScripts/typings/*</path>
   </files>
   <objects>
     <path>~/Objects/*</path>
