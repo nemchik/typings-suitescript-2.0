@@ -2,7 +2,7 @@
 
 - **NetSuite version:** 2026.2
 - **Account type:** sandbox
-- **Date:** 2026-11-14
+- **Date:** 2026-11-14, rerun 2026-11-19 under suitescript-verify 2.0.0
 - **Method:** deployed RESTlet (the suitescript-verify runner)
 - **Probe:** [crypto-hashalg](../probes/crypto-hashalg.js)
 

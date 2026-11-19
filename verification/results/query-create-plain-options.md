@@ -2,7 +2,7 @@
 
 - **NetSuite version:** 2026.2
 - **Account type:** sandbox
-- **Date:** 2026-11-14
+- **Date:** 2026-11-14, rerun 2026-11-19 under suitescript-verify 2.0.0
 - **Method:** deployed RESTlet (the suitescript-verify runner)
 - **Probe:** [query-create-plain-options](../probes/query-create-plain-options.js)
 
@@ -151,6 +151,12 @@ define(["N/query"], (query) => ({
   "control: createColumn/createCondition": true
 }
 ```
+
+### Rerun under suitescript-verify 2.0.0 (2026-11-19)
+
+The runner now runs as a role that the deploy writes (token login, REST web services, and what probes declare), shared on this machine with another project's runner, instead of the earlier hand-built role. `query.Type` then enumerated 78 keys, and `CUSTOMER` was among them (earlier: 80 keys, no `CUSTOMER`). So the members of `query.Type` at runtime depend on the role's permissions, not only on the account's features.
+
+Every other key matched the first run: the usable type was still `activity`, and every plain-options case returned `true`.
 
 ## Explanation
 

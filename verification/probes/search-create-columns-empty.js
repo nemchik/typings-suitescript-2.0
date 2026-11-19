@@ -7,6 +7,7 @@
  *
  * @NApiVersion 2.1
  * @scriptType Restlet
+ * @permission ADMI_CUSTOMSCRIPT VIEW
  */
 define(["N/search"], (search) => ({
   run() {
