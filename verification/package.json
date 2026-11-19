@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@oracle/suitecloud-cli": "4.1.1",
-    "suitescript-verify": "1.1.0"
+    "suitescript-verify": "2.0.0"
   },
   "allowScripts": {
     "@oracle/suitecloud-cli": true

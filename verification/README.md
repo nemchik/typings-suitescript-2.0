@@ -13,7 +13,7 @@ npm ci --prefix verification
 # then read verification/node_modules/suitescript-verify/README.md
 ```
 
-Run the commands from the repository root as `npm run verify:<command>`, with arguments after `--` (for example `npm run verify:run -- probe-zero`). They call the package with `--dir .`, so this folder is the verification folder: `.env` (committed layout), `.env.local` (gitignored credentials), `probes/`, `results/` and the generated `sdf/`.
+Run the commands from the repository root as `npm run verify:<command>`, with arguments after `--` (for example `npm run verify:run -- crypto-hashalg`). They call the package with `--dir .`, so this folder is the verification folder: `.env` (committed layout), `.env.local` (gitignored credentials), `probes/`, `results/` and the generated `sdf/`.
 
 ## Conventions in this repository
 
@@ -22,4 +22,6 @@ Run the commands from the repository root as `npm run verify:<command>`, with ar
 - **No account numbers, URLs, users, tokens or real record ids** in a probe, a results page or a pull request. A probe that needs a real record takes its id as a `@param`.
 - **Probes only read.** A test that writes to the account is run by hand, and its code lives in its results page (see `results/email-send-recipients.md`).
 - **Results pages go in `verification/results/`**, one per verification (`run <probe> --draft` writes the first version). Link the page from the pull request instead of pasting output into it.
-- The runner id is `typings` (committed in `.env`; at most 12 characters with suitescript-verify 1.1.0, whose runner title must fit in 40), so this repository's runner does not collide with other projects in the same sandbox. The committed role id is the package default; set your real role id as `SUITESCRIPT_VERIFY_ROLE_ID` in `.env.local`, which takes priority.
+- The runner id is `typings` (committed in `.env`), so this repository's runner (`customscript_typings_rl`, with its Suitelet host `customscript_typings_sl`) does not collide with other projects in the same sandbox.
+- **The deploy owns the runner's role.** It defaults to `customrole_typings`, and every deploy writes it: token login and REST web services, plus what probes declare. A probe that needs a permission declares it with `@permission <permkey> VIEW`; never add one to the role by hand. To use another role, set `SUITESCRIPT_VERIFY_ROLE_ID` in `.env.local`, and never share it with another project's runner.
+- `doctor` checks the deployed runner with its self-check, so there is no smoke-test probe.
